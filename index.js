@@ -24,15 +24,13 @@ app.post("/register", async (req,res,next) => {
   try {
 
     const { username, password } = req.body;
-
     if (username === null || password == null) {
-      throw new Error("")
+      throw new Error("");
     }
     
     const details = await User.findOne({where: {username: username}, raw: true});
-    
     if (details !== null) {
-      throw new Error("")
+      throw new Error("");
     }
     
     const saltRounds = 10;
@@ -45,12 +43,12 @@ app.post("/register", async (req,res,next) => {
         password: hash
       });
 
-      res.status(200)
-      res.send("successfully created user " + username)
+      res.status(200);
+      res.send("successfully created user " + username);
     });
 
   } catch {
-    res.status(400).end()
+    res.status(400).end();
   }
 })
 // POST /register
@@ -60,27 +58,24 @@ app.post("/login", async (req,res) => {
   try {
 
     const { username, password } = req.body;
-    
     if (username === null || password == null) {
-      throw new Error("")
+      throw new Error("");
     }
 
     const details = await User.findOne({where: {username: username}, raw: true});
-
     if (details.password === null) {
-      throw new Error("")
+      throw new Error("");
     }
 
     const result = await bcrypt.compare(password, details.password);
-
     if (result) {
       return res.status(200).send("successfully logged in user " + username)
     }
 
-    throw new Error("")
-    
+      throw new Error("");
+
   } catch(error) {
-    res.status(400).send("incorrect username or password")
+    res.status(400).send("incorrect username or password");
   }
 })
 // we export the app, not listening in here, so that we can run tests
