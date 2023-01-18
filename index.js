@@ -2,11 +2,11 @@ const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
 const { User } = require('./db');
-const { seed } = require("./db/seedFn")
+// const { seed } = require("./db/seedFn")
 
-(()=> {
-  seed()
-})
+// (()=> {
+//   seed()
+// })
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
@@ -34,7 +34,8 @@ app.post("/register", async (req,res,next) => {
         username: username,
         password: hash
       });
-      res.status(200).end()
+      res.status(200)
+      res.send("successfully created user " + username)
     });
   } catch {
     res.status(400).end()
@@ -50,10 +51,10 @@ app.post("/login", async (req,res) => {
     const details = await User.findOne({where: {username: username}, raw: true});
     if (details.password === null) throw new Error("")
     const result = await bcrypt.compare(password, details.password);
-    if (result) return res.status(200).send("Success")
+    if (result) return res.status(200).send("successfully logged in user " + username)
     throw new Error("")
   } catch(error) {
-    res.status(400).send("Failed")
+    res.status(400).send("incorrect username or password")
   }
 })
 // we export the app, not listening in here, so that we can run tests
